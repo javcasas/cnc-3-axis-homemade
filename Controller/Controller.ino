@@ -111,6 +111,10 @@ signed long x_pos = 0;
 signed long y_pos = 0;
 signed long z_pos = 0;
 
+signed long target_x_pos = 0;
+signed long target_y_pos = 0;
+signed long target_z_pos = 0;
+
 int prev_x1 = 0;
 int prev_x2 = 0;
 int prev_y1 = 0;
@@ -128,52 +132,89 @@ void preload_servos () {
   prev_z2 = digitalRead(zstep2);
 }
 
-int calc_direction (int x1, int x2, int prevx1, int prevx2) {
-  if ((x1 == prevx1) && (x2 == prevx2)) {
-    return 0
+int calc_direction (int p1, int p2, int c1, int c2) {
+  if        ((p1 == 0) && (p2 == 0) && (c1 == 0) && (c2 == 1)) {
+    return 1;
+  } else if ((p1 == 0) && (p2 == 1) && (c1 == 1) && (c2 == 1)) {
+    return 1;
+  } else if ((p1 == 1) && (p2 == 1) && (c1 == 1) && (c2 == 0)) {
+    return 1;
+  } else if ((p1 == 1) && (p2 == 0) && (c1 == 0) && (c2 == 0)) {
+    return 1;
+  } else if ((p1 == 1) && (p2 == 0) && (c1 == 1) && (c2 == 1)) {
+    return -1;
+  } else if ((p1 == 1) && (p2 == 1) && (c1 == 0) && (c2 == 1)) {
+    return -1;
+  } else if ((p1 == 0) && (p2 == 1) && (c1 == 0) && (c2 == 0)) {
+    return -1;
+  } else if ((p1 == 0) && (p2 == 0) && (c1 == 1) && (c2 == 0)) {
+    return -1;
+  } else {
+    return 0;
   }
 }
+
 void update_x() {
+  int dir = calc_direction(prev_x1, prev_x2, digitalRead(xstep1), digitalRead(xstep2));
+  x_pos = x_pos + dir;
+  prev_x1 = digitalRead(xstep1);
+  prev_x2 = digitalRead(xstep2);
 }
 
 void update_y() {
+  int dir = calc_direction(prev_y1, prev_y2, digitalRead(ystep1), digitalRead(ystep2));
+  y_pos = y_pos + dir;
+  prev_y1 = digitalRead(ystep1);
+  prev_y2 = digitalRead(ystep2);
 }
 
 void update_z() {
+  int dir = calc_direction(prev_z1, prev_z2, digitalRead(zstep1), digitalRead(zstep2));
+  z_pos = z_pos + dir;
+  prev_z1 = digitalRead(zstep1);
+  prev_z2 = digitalRead(zstep2);
 }
+
+#define MODE_HOME_Y 1
+#define MODE_HOME_Y_RETURN 6
+#define MODE_END 10
+
+int mode = MODE_HOME_Y;
+int counter = 0;
+
 
 // the loop routine runs over and over again forever:
 void loop() {
-//  digitalWrite(led, digitalRead(9));   // turn the LED on (HIGH is the voltage level)
-  //digitalWrite(led, HIGH);    // turn the LED off by making the voltage LOW
-  //delay(50);               // wait for a second
-  //digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
-  //delay(50);  // wait for a second
-  digitalWrite(led, digitalRead(ystep1));
-  //if (digitalRead(ystep1)) {
-  //  
-  //}
-  /*if (digitalRead(ymin)) {
-    move_y(1);
-    delay(300);
-  } else {
-    halt();
-    delay(100);
-    move_y(-1);
-    delay(10000);
-  }*/
-  //int limit = digitalRead(ymin);
-  //digitalWrite(led, limit);
-  //if (!limit) {
-   // move_y(1);
-    //move_x(-1);
-  //  delay(1000);
-  //  halt();
-  //  delay(100);
-  //  move_y(-1);
-  //  delay(100);
-  //}
-  //halt();
-  //delay(100);
+  counter = counter + 1;
+  if (counter > 9) {
+    counter = 0;
+  }
+  update_x();
+  update_y();
+  update_z();
 
+  if (mode == MODE_HOME_Y) {
+    digitalWrite(led, counter % 2);
+    if (digitalRead(ymin)) {
+      move_y(1);
+    } else {
+      move_y(0);
+      mode = MODE_HOME_Y_RETURN;
+    }
+  } else if (mode == MODE_HOME_Y_RETURN) {
+    digitalWrite(led, counter % 2);
+    if (!digitalRead(ymin)) {
+      move_y(-1);
+    } else {
+      move_y(0);
+      mode = MODE_END;
+    }
+
+  }
+  else if (mode == MODE_END) {
+    digitalWrite(led, true);
+    halt();
+  }
+
+  delay(100);
 }
