@@ -7,6 +7,8 @@
  
 // Pin 13 has an LED connected on most Arduino boards.
 // give it a name:
+#include "types.h"
+
 int led = 13;
 
 int x1 = 6;
@@ -83,15 +85,7 @@ void move_axis(int p1, int p2, int dir) {
   }
 }
 
-int sign(signed long val) {
-  if (val > 0) {
-    return 1;
-  } else if (val < 0) {
-    return -1;
-  } else {
-    return 0;
-  }
-}
+
 
 void move_x(int dir) {
   move_axis(x1, x2, dir);
@@ -117,16 +111,6 @@ void update_servos() {
   update_z();
 }
 
-struct Coord {
-  signed long x;
-  signed long y;
-  signed long z;
-};
-
-struct Coord pos = {0,0,0};
-
-struct Coord source = {0,0,0};
-struct Coord target = {0,0,0};
 
 //signed long x_pos = 0;
 //signed long y_pos = 0;
@@ -308,21 +292,13 @@ void traverse_along_z() {
   
 }
 
+struct Coord traverse (struct Coord source, struct Coord target, struct Coord pos);
 
 void traverse_to_coords() {
-  struct Coord trajectory = {
-    target.x - source.x,
-    target.y - source.y,
-    target.z - source.z
-  };
-  if ((abs(trajectory.x >= trajectory.y)) && (abs(trajectory.x >= trajectory.z))) {
-    traverse_along_x();
-  } else if (abs(trajectory.y >= trajectory.z)) {
-    traverse_along_y();
-  } else {
-    traverse_along_z();
-  }
- 
+  struct Coord movement = traverse(source, target, pos);
+  move_x(movement.x);
+  move_y(movement.y);
+  move_z(movement.z); 
 }
 
 void blink_pattern_() {
