@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include <criterion/criterion.h>
-#include "../Controller/traverse.c"
+#include "../Controller/types.h"
+#include "../Controller/traverse.ino"
 
 Test(Main, test_traverse_1_along_x) {
     source.x = 5;
