@@ -339,9 +339,15 @@ void processPort() {
 
 void tryProcessInstruction() {
   int counter=0;
-  Serial.print("Echoing back: ");
   for(counter=0; counter<instructionBufferPosition; counter++) {
     Serial.write(instructionBuffer[counter]);
+  }
+  if((instructionBuffer[0] == 's') &&
+     (instructionBuffer[1] == 't') &&
+     (instructionBuffer[2] == 'o') &&
+     (instructionBuffer[3] == 'p')
+    ) {
+    Serial.print("STOP");
   }
 }
 
