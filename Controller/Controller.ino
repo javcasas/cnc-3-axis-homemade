@@ -70,6 +70,7 @@ void setup() {
   setup_sensors();
   setup_motors();
   preload_servos();
+  Serial.begin(9600);
 }
 
 void move_axis(int p1, int p2, int dir) {
@@ -195,7 +196,7 @@ void update_z() {
 #define MODE_STOP 50
 #define MODE_GO_TO_COORDS 51
 
-int mode = MODE_GO_TO_HOME_Y;
+int mode = MODE_STOP;
 int counter = 0;
 int blink_pattern = 0b1111111111111111;
 
@@ -308,12 +309,46 @@ void blink_pattern_() {
     counter = 0;
   }
   should_blink = (1 << counter) == 0;
+  if (should_blink) {
+    Serial.print("One\n");
+  }
   digitalWrite(led, should_blink);
+}
+
+int instructionBuffer[64];
+int instructionBufferPosition = 0;
+void processPort() {
+  int readstuff = 0;
+  readstuff = Serial.read();
+  while (readstuff != -1) {
+    instructionBuffer[instructionBufferPosition] = readstuff;
+    instructionBufferPosition += 1;
+    if (instructionBufferPosition > 63) {
+      instructionBufferPosition = 63;
+    }
+    Serial.print(readstuff);
+    readstuff = Serial.read();
+    //Serial.print(instructionBufferPosition);
+    
+  }
+  if (instructionBuffer[instructionBufferPosition - 1] == 10) {
+    tryProcessInstruction();
+    instructionBufferPosition = 0;
+  }
+}
+
+void tryProcessInstruction() {
+  int counter=0;
+  Serial.print("Echoing back: ");
+  for(counter=0; counter<instructionBufferPosition; counter++) {
+    Serial.write(instructionBuffer[counter]);
+  }
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
   blink_pattern_();
+  processPort();
   update_x();
   update_y();
   update_z();
@@ -337,7 +372,7 @@ void loop() {
     blink_pattern = 0b1100110011001100;
     go_to_home_z_return();
   } else if (mode == MODE_STOP) {
-    blink_pattern = 0b1111111111111111;
+    blink_pattern = 0b1111111111111110;
     stop_();
   } else if (mode == MODE_GO_TO_COORDS) {
     blink_pattern = 0b1111111100000000;
