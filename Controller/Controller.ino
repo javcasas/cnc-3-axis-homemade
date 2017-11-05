@@ -1,12 +1,4 @@
-/*
-  Blink
-  Turns on an LED on for one second, then off for one second, repeatedly.
- 
-  This example code is in the public domain.
- */
- 
-// Pin 13 has an LED connected on most Arduino boards.
-// give it a name:
+
 #include "types.h"
 
 
@@ -32,29 +24,9 @@
 #define PIN_Z_ENCODER_1 10
 #define PIN_Z_ENCODER_2 10
 
+// Pin 13 has an LED connected on most Arduino boards.
 #define PIN_LED 13
 
-/*int x1 = 6;
-int x2 = 7;
-int xmin = 8;
-int xmax = 9;
-int xstep1 = 10;
-int xstep2 = 11;
-
-int y1 = 4;
-int y2 = 5;
-int ymin = 8;
-int ymax = 9;
-int ystep1 = 10;
-int ystep2 = 11;
-
-int z1 = 6;
-int z2 = 7;
-int zmin = 8;
-int zmax = 9;
-int zstep1 = 10;
-int zstep2 = 11;
-*/
 void setup_motors() {
   halt();
   pinMode(PIN_X_MOTOR_1, OUTPUT);
@@ -90,8 +62,8 @@ void setup_sensors() {
 void setup() {                
   // initialize the digital pin as an output.
   pinMode(PIN_LED, OUTPUT);
-  setup_sensors();
   setup_motors();
+  setup_sensors();
   preload_servos();
   Serial.begin(9600);
 }
@@ -108,8 +80,6 @@ void move_axis(int p1, int p2, int dir) {
     digitalWrite(p2, LOW);
   }
 }
-
-
 
 void move_x(int dir) {
   move_axis(PIN_X_MOTOR_1, PIN_X_MOTOR_2, dir);
@@ -134,15 +104,6 @@ void update_servos() {
   update_y();
   update_z();
 }
-
-
-//signed long x_pos = 0;
-//signed long y_pos = 0;
-//signed long z_pos = 0;
-
-//signed long target_x_pos = 0;
-//signed long target_y_pos = 0;
-//signed long target_z_pos = 0;
 
 int prev_x1 = 0;
 int prev_x2 = 0;
@@ -221,7 +182,6 @@ void update_z() {
 #define MODE_TEST 100
 
 int mode = MODE_GO_TO_HOME_Y;
-int counter = 0;
 int blink_pattern = 0b1111111111111111;
 
 void go_to_home_x() {
@@ -285,38 +245,6 @@ void stop_() {
   halt();
 }
 
-void traverse_along_x() {
-  struct Coord trajectory = {
-    target.x - source.x,
-    target.y - source.y,
-    target.z - source.z
-  };
-  signed long position_along_trajectory = pos.x - trajectory.x;
-  double proportion = position_along_trajectory / trajectory.x;
-
-  struct Coord expected_position = {
-    source.x + position_along_trajectory,
-    source.y + trajectory.y * proportion,
-    source.z + trajectory.z * proportion
-  };
-  struct Coord error = {
-    pos.x - expected_position.x,
-    pos.y - expected_position.y,
-    pos.z - expected_position.z
-  };
-  move_x(sign(trajectory.x));
-  move_y(sign(error.y));
-  move_z(sign(error.z));
-}
-
-void traverse_along_y() {
-  
-}
-
-void traverse_along_z() {
-  
-}
-
 struct Coord traverse (struct Coord source, struct Coord target, struct Coord pos);
 
 void traverse_to_coords() {
@@ -327,6 +255,7 @@ void traverse_to_coords() {
 }
 
 void blink_pattern_() {
+  static int counter = 0;
   int should_blink = 0;
   counter = counter + 1;
   if (counter > 16) {
