@@ -336,12 +336,6 @@ void blink_pattern_() {
   digitalWrite(PIN_LED, should_blink);
 }
 
-int instructionBuffer[64];
-
-
-
-
-
 // the loop routine runs over and over again forever:
 void loop() {
   blink_pattern_();

@@ -1,3 +1,4 @@
+int instructionBuffer[64];
 int instructionBufferPosition = 0;
 void processPort() {
   int readstuff = 0;
@@ -63,6 +64,11 @@ void tryProcessInstruction() {
      (instructionBuffer[2] == 't')
     ) {
     tstCMD();
+  } else if((instructionBuffer[0] == 'c') &&
+     (instructionBuffer[1] == 'a') &&
+     (instructionBuffer[2] == 'l')
+    ) {
+    calCMD();
   } else if((instructionBuffer[0] == 'm') &&
      (instructionBuffer[1] == 'o') &&
      (instructionBuffer[2] == 'v')
@@ -99,7 +105,9 @@ void tryProcessInstruction() {
 
 void stopCMD() {
   Serial.print("STOP\n");
+  mode = MODE_STOP;
 }
+
 void posCMD() {
   Serial.print("POSITION X:");
   Serial.print(pos.x);
@@ -109,6 +117,7 @@ void posCMD() {
   Serial.print(pos.z);
   Serial.print("\n");
 }
+
 void movCMD(long nx, long ny, long nz) {
   Serial.print("MOVE TO X:");
   Serial.print(nx);
@@ -116,8 +125,13 @@ void movCMD(long nx, long ny, long nz) {
   Serial.print(ny);
   Serial.print(" Z:");
   Serial.print(nz);
-  Serial.print("\n");
+  Serial.print("\n");\
+  target.x = nx;
+  target.y = ny;
+  target.z = nz;
+  mode = MODE_GO_TO_COORDS;
 }
+
 void staCMD() {
   Serial.print("MODE:");
   printMode();
@@ -133,6 +147,12 @@ void staCMD() {
   printBool(digitalRead(PIN_Z_LIMIT_2));
   Serial.print("\n");
 }
+
+void calCMD() {
+  Serial.print("CALIBRATE");
+  mode = MODE_GO_TO_HOME_X;
+}
+
 void printBool(int x) {
   if (x) {
     Serial.print("T");
@@ -191,22 +211,21 @@ void tstCMD() {
   mode = MODE_TEST;
 }
 
-boolean p_x_limit_1 = 0;
-boolean p_x_limit_2 = 0;
-boolean p_y_limit_1 = 0;
-boolean p_y_limit_2 = 0;
-boolean p_z_limit_1 = 0;
-boolean p_z_limit_2 = 0;
-
-boolean p_x_encoder_1 = 0;
-boolean p_x_encoder_2 = 0;
-boolean p_y_encoder_1 = 0;
-boolean p_y_encoder_2 = 0;
-boolean p_z_encoder_1 = 0;
-boolean p_z_encoder_2 = 0;
-
 void mode_test() {
-  boolean show = 0;
+  static boolean p_x_limit_1 = 0;
+  static boolean p_x_limit_2 = 0;
+  static boolean p_y_limit_1 = 0;
+  static boolean p_y_limit_2 = 0;
+  static boolean p_z_limit_1 = 0;
+  static boolean p_z_limit_2 = 0;
+
+  static boolean p_x_encoder_1 = 0;
+  static boolean p_x_encoder_2 = 0;
+  static boolean p_y_encoder_1 = 0;
+  static boolean p_y_encoder_2 = 0;
+  static boolean p_z_encoder_1 = 0;
+  static boolean p_z_encoder_2 = 0;
+
   if (
     p_x_limit_1 != digitalRead(PIN_X_LIMIT_1) ||
     p_x_limit_2 != digitalRead(PIN_X_LIMIT_2) ||
