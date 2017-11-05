@@ -58,6 +58,11 @@ void tryProcessInstruction() {
      (instructionBuffer[2] == 'a')
     ) {
     staCMD();
+  } else if((instructionBuffer[0] == 't') &&
+     (instructionBuffer[1] == 's') &&
+     (instructionBuffer[2] == 't')
+    ) {
+    tstCMD();
   } else if((instructionBuffer[0] == 'm') &&
      (instructionBuffer[1] == 'o') &&
      (instructionBuffer[2] == 'v')
@@ -118,14 +123,14 @@ void staCMD() {
   printMode();
   Serial.print(" LIMITS:");
   Serial.print(" X:");
-  printBool(digitalRead(xmin));
-  printBool(digitalRead(xmax));
+  printBool(digitalRead(PIN_X_LIMIT_1));
+  printBool(digitalRead(PIN_X_LIMIT_2));
   Serial.print(" Y:");
-  printBool(digitalRead(ymin));
-  printBool(digitalRead(ymax));
+  printBool(digitalRead(PIN_Y_LIMIT_1));
+  printBool(digitalRead(PIN_Y_LIMIT_2));
   Serial.print(" Z:");
-  printBool(digitalRead(zmin));
-  printBool(digitalRead(zmax));
+  printBool(digitalRead(PIN_Z_LIMIT_1));
+  printBool(digitalRead(PIN_Z_LIMIT_2));
   Serial.print("\n");
 }
 void printBool(int x) {
@@ -181,3 +186,74 @@ void errorCMD(char error[]) {
   Serial.print("\n");
 }
 
+void tstCMD() {
+  Serial.print("TEST\n");
+  mode = MODE_TEST;
+}
+
+boolean p_x_limit_1 = 0;
+boolean p_x_limit_2 = 0;
+boolean p_y_limit_1 = 0;
+boolean p_y_limit_2 = 0;
+boolean p_z_limit_1 = 0;
+boolean p_z_limit_2 = 0;
+
+boolean p_x_encoder_1 = 0;
+boolean p_x_encoder_2 = 0;
+boolean p_y_encoder_1 = 0;
+boolean p_y_encoder_2 = 0;
+boolean p_z_encoder_1 = 0;
+boolean p_z_encoder_2 = 0;
+
+void mode_test() {
+  boolean show = 0;
+  if (
+    p_x_limit_1 != digitalRead(PIN_X_LIMIT_1) ||
+    p_x_limit_2 != digitalRead(PIN_X_LIMIT_2) ||
+    p_y_limit_1 != digitalRead(PIN_Y_LIMIT_1) ||
+    p_y_limit_2 != digitalRead(PIN_Y_LIMIT_2) ||
+    p_z_limit_1 != digitalRead(PIN_Z_LIMIT_1) ||
+    p_z_limit_2 != digitalRead(PIN_Z_LIMIT_2) ||
+    p_x_encoder_1 != digitalRead(PIN_X_ENCODER_1) ||
+    p_x_encoder_2 != digitalRead(PIN_X_ENCODER_2) ||
+    p_y_encoder_1 != digitalRead(PIN_Y_ENCODER_1) ||
+    p_y_encoder_2 != digitalRead(PIN_Y_ENCODER_2) ||
+    p_z_encoder_1 != digitalRead(PIN_Z_ENCODER_1) ||
+    p_z_encoder_2 != digitalRead(PIN_Z_ENCODER_2)
+  ) {
+    Serial.print(" X-LIMITS:");
+    printBool(digitalRead(PIN_X_LIMIT_1));
+    printBool(digitalRead(PIN_X_LIMIT_2));
+    Serial.print(" X-ENCODER:");
+    printBool(digitalRead(PIN_X_ENCODER_1));
+    printBool(digitalRead(PIN_X_ENCODER_2));
+
+    Serial.print(" Y-LIMITS:");
+    printBool(digitalRead(PIN_Y_LIMIT_1));
+    printBool(digitalRead(PIN_Y_LIMIT_2));
+    Serial.print(" Y-ENCODER:");
+    printBool(digitalRead(PIN_Y_ENCODER_1));
+    printBool(digitalRead(PIN_Y_ENCODER_2));
+
+    Serial.print(" Z-LIMITS:");
+    printBool(digitalRead(PIN_Z_LIMIT_1));
+    printBool(digitalRead(PIN_Z_LIMIT_2));
+    Serial.print(" Z-ENCODER:");
+    printBool(digitalRead(PIN_Z_ENCODER_1));
+    printBool(digitalRead(PIN_Z_ENCODER_2));
+    Serial.print("\n");
+  }
+  p_x_limit_1 = digitalRead(PIN_X_LIMIT_1);
+  p_x_limit_2 = digitalRead(PIN_X_LIMIT_2);
+  p_y_limit_1 = digitalRead(PIN_Y_LIMIT_1);
+  p_y_limit_2 = digitalRead(PIN_Y_LIMIT_2);
+  p_z_limit_1 = digitalRead(PIN_Z_LIMIT_1);
+  p_z_limit_2 = digitalRead(PIN_Z_LIMIT_2);
+
+  p_x_encoder_1 = digitalRead(PIN_X_ENCODER_1);
+  p_x_encoder_2 = digitalRead(PIN_X_ENCODER_2);
+  p_y_encoder_1 = digitalRead(PIN_Y_ENCODER_1);
+  p_y_encoder_2 = digitalRead(PIN_Y_ENCODER_2);
+  p_z_encoder_1 = digitalRead(PIN_Z_ENCODER_1);
+  p_z_encoder_2 = digitalRead(PIN_Z_ENCODER_2);
+}

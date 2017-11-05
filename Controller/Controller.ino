@@ -9,9 +9,32 @@
 // give it a name:
 #include "types.h"
 
-int led = 13;
 
-int x1 = 6;
+// Pinout
+#define PIN_X_MOTOR_1 6
+#define PIN_X_MOTOR_2 7
+#define PIN_X_LIMIT_1 8
+#define PIN_X_LIMIT_2 9
+#define PIN_X_ENCODER_1 10
+#define PIN_X_ENCODER_2 10
+
+#define PIN_Y_MOTOR_1 4
+#define PIN_Y_MOTOR_2 5
+#define PIN_Y_LIMIT_1 9
+#define PIN_Y_LIMIT_2 9
+#define PIN_Y_ENCODER_1 10
+#define PIN_Y_ENCODER_2 10
+
+#define PIN_Z_MOTOR_1 6
+#define PIN_Z_MOTOR_2 6
+#define PIN_Z_LIMIT_1 9
+#define PIN_Z_LIMIT_2 9
+#define PIN_Z_ENCODER_1 10
+#define PIN_Z_ENCODER_2 10
+
+#define PIN_LED 13
+
+/*int x1 = 6;
 int x2 = 7;
 int xmin = 8;
 int xmax = 9;
@@ -31,42 +54,42 @@ int zmin = 8;
 int zmax = 9;
 int zstep1 = 10;
 int zstep2 = 11;
-
+*/
 void setup_motors() {
   halt();
-  pinMode(x1, OUTPUT);
-  pinMode(x2, OUTPUT);
+  pinMode(PIN_X_MOTOR_1, OUTPUT);
+  pinMode(PIN_X_MOTOR_2, OUTPUT);
 
-  pinMode(y1, OUTPUT);
-  pinMode(y2, OUTPUT);
+  pinMode(PIN_Y_MOTOR_1, OUTPUT);
+  pinMode(PIN_Y_MOTOR_2, OUTPUT);
 
-  pinMode(z1, OUTPUT);
-  pinMode(z2, OUTPUT);
+  pinMode(PIN_Z_MOTOR_1, OUTPUT);
+  pinMode(PIN_Z_MOTOR_2, OUTPUT);
   halt();
 }
 
 void setup_sensors() {
-  pinMode(xmin, INPUT_PULLUP);
-  pinMode(xmax, INPUT_PULLUP);
-  pinMode(xstep1, INPUT_PULLUP);
-  pinMode(xstep2, INPUT_PULLUP);
+  pinMode(PIN_X_LIMIT_1, INPUT_PULLUP);
+  pinMode(PIN_X_LIMIT_2, INPUT_PULLUP);
+  pinMode(PIN_X_ENCODER_1, INPUT_PULLUP);
+  pinMode(PIN_X_ENCODER_2, INPUT_PULLUP);
 
-  pinMode(ymin, INPUT_PULLUP);
-  pinMode(ymax, INPUT_PULLUP);
-  pinMode(ystep1, INPUT_PULLUP);
-  pinMode(ystep2, INPUT_PULLUP);
+  pinMode(PIN_Y_LIMIT_1, INPUT_PULLUP);
+  pinMode(PIN_Y_LIMIT_2, INPUT_PULLUP);
+  pinMode(PIN_Y_ENCODER_1, INPUT_PULLUP);
+  pinMode(PIN_Y_ENCODER_2, INPUT_PULLUP);
 
-  pinMode(zmin, INPUT_PULLUP);
-  pinMode(zmax, INPUT_PULLUP);
-  pinMode(zstep1, INPUT_PULLUP);
-  pinMode(zstep2, INPUT_PULLUP);
+  pinMode(PIN_Z_LIMIT_1, INPUT_PULLUP);
+  pinMode(PIN_Z_LIMIT_2, INPUT_PULLUP);
+  pinMode(PIN_Z_ENCODER_1, INPUT_PULLUP);
+  pinMode(PIN_Z_ENCODER_2, INPUT_PULLUP);
 }
 
 
 // the setup routine runs once when you press reset:
 void setup() {                
   // initialize the digital pin as an output.
-  pinMode(led, OUTPUT);
+  pinMode(PIN_LED, OUTPUT);
   setup_sensors();
   setup_motors();
   preload_servos();
@@ -89,15 +112,15 @@ void move_axis(int p1, int p2, int dir) {
 
 
 void move_x(int dir) {
-  move_axis(x1, x2, dir);
+  move_axis(PIN_X_MOTOR_1, PIN_X_MOTOR_2, dir);
 }
 
 void move_y(int dir) {
-  move_axis(y1, y2, dir);
+  move_axis(PIN_Y_MOTOR_1, PIN_Y_MOTOR_2, dir);
 }
 
 void move_z(int dir) {
-  move_axis(z1, z2, dir);
+  move_axis(PIN_Z_MOTOR_1, PIN_Z_MOTOR_2, dir);
 }
 
 void halt() {
@@ -130,12 +153,12 @@ int prev_z2 = 0;
 
 
 void preload_servos () {
-  prev_x1 = digitalRead(xstep1);
-  prev_x2 = digitalRead(xstep2);
-  prev_y1 = digitalRead(ystep1);
-  prev_y2 = digitalRead(ystep2);
-  prev_z1 = digitalRead(zstep1);
-  prev_z2 = digitalRead(zstep2);
+  prev_x1 = digitalRead(PIN_X_ENCODER_1);
+  prev_x2 = digitalRead(PIN_X_ENCODER_2);
+  prev_y1 = digitalRead(PIN_Y_ENCODER_1);
+  prev_y2 = digitalRead(PIN_Y_ENCODER_2);
+  prev_z1 = digitalRead(PIN_Z_ENCODER_1);
+  prev_z2 = digitalRead(PIN_Z_ENCODER_2);
 }
 
 int calc_direction (int p1, int p2, int c1, int c2) {
@@ -161,24 +184,24 @@ int calc_direction (int p1, int p2, int c1, int c2) {
 }
 
 void update_x() {
-  int dir = calc_direction(prev_x1, prev_x2, digitalRead(xstep1), digitalRead(xstep2));
+  int dir = calc_direction(prev_x1, prev_x2, digitalRead(PIN_X_ENCODER_1), digitalRead(PIN_X_ENCODER_2));
   pos.x = pos.x + dir;
-  prev_x1 = digitalRead(xstep1);
-  prev_x2 = digitalRead(xstep2);
+  prev_x1 = digitalRead(PIN_X_ENCODER_1);
+  prev_x2 = digitalRead(PIN_X_ENCODER_2);
 }
 
 void update_y() {
-  int dir = calc_direction(prev_y1, prev_y2, digitalRead(ystep1), digitalRead(ystep2));
+  int dir = calc_direction(prev_y1, prev_y2, digitalRead(PIN_Y_ENCODER_1), digitalRead(PIN_Y_ENCODER_2));
   pos.y = pos.y + dir;
-  prev_y1 = digitalRead(ystep1);
-  prev_y2 = digitalRead(ystep2);
+  prev_y1 = digitalRead(PIN_Y_ENCODER_1);
+  prev_y2 = digitalRead(PIN_Y_ENCODER_2);
 }
 
 void update_z() {
-  int dir = calc_direction(prev_z1, prev_z2, digitalRead(zstep1), digitalRead(zstep2));
+  int dir = calc_direction(prev_z1, prev_z2, digitalRead(PIN_Z_ENCODER_1), digitalRead(PIN_Z_ENCODER_2));
   pos.z = pos.z + dir;
-  prev_z1 = digitalRead(zstep1);
-  prev_z2 = digitalRead(zstep2);
+  prev_z1 = digitalRead(PIN_Z_ENCODER_1);
+  prev_z2 = digitalRead(PIN_Z_ENCODER_2);
 }
 
 #define MODE_GO_TO_HOME_X 10
@@ -195,6 +218,7 @@ void update_z() {
 
 #define MODE_STOP 50
 #define MODE_GO_TO_COORDS 51
+#define MODE_TEST 100
 
 int mode = MODE_GO_TO_HOME_Y;
 int counter = 0;
@@ -202,7 +226,7 @@ int blink_pattern = 0b1111111111111111;
 
 void go_to_home_x() {
   // Find the X start switch
-  if (digitalRead(xmin)) {
+  if (digitalRead(PIN_X_LIMIT_1)) {
      move_x(1);
    } else {
      move_x(0);
@@ -211,7 +235,7 @@ void go_to_home_x() {
 }
 
 void go_to_home_x_return() {
-  if (digitalRead(xmin)) {
+  if (digitalRead(PIN_X_LIMIT_1)) {
      mode = MODE_STOP;
      move_x(0);
    } else {
@@ -221,7 +245,7 @@ void go_to_home_x_return() {
 
 void go_to_home_y() {
   // Find the Y start switch
-  if (digitalRead(ymin)) {
+  if (digitalRead(PIN_Y_LIMIT_1)) {
      move_y(1);
    } else {
      move_y(0);
@@ -230,7 +254,7 @@ void go_to_home_y() {
 }
 
 void go_to_home_y_return() {
-  if (digitalRead(ymin)) {
+  if (digitalRead(PIN_Y_LIMIT_1)) {
      mode = MODE_STOP;
      move_y(0);
    } else {
@@ -240,7 +264,7 @@ void go_to_home_y_return() {
 
 void go_to_home_z() {
   // Find the Z start switch
-  if (digitalRead(zmin)) {
+  if (digitalRead(PIN_Z_LIMIT_1)) {
      move_z(1);
    } else {
      move_z(0);
@@ -249,7 +273,7 @@ void go_to_home_z() {
 }
 
 void go_to_home_z_return() {
-  if (digitalRead(zmin)) {
+  if (digitalRead(PIN_Z_LIMIT_1)) {
      mode = MODE_STOP;
      move_z(0);
    } else {
@@ -308,11 +332,13 @@ void blink_pattern_() {
   if (counter > 16) {
     counter = 0;
   }
-  should_blink = (1 << counter) == 0;
-  digitalWrite(led, should_blink);
+  should_blink = ((1 << counter) & blink_pattern) == 0;
+  digitalWrite(PIN_LED, should_blink);
 }
 
 int instructionBuffer[64];
+
+
 
 
 
@@ -348,6 +374,9 @@ void loop() {
   } else if (mode == MODE_GO_TO_COORDS) {
     blink_pattern = 0b1111111100000000;
     traverse_to_coords();
+  } else if (mode == MODE_TEST) {
+    blink_pattern = 0b1111111111111010;
+    mode_test();
   } else {
   }
   delay(100);
