@@ -15,17 +15,22 @@
       [ ] z-rot1
       [ ] z-rot2
       [ ] calculated x-pos
+          Acceptance criteria: it counts in units from an internal counter that is reset during calibration
       [ ] calculated y-pos
+          Acceptance criteria: it counts in units from an internal counter that is reset during calibration
       [ ] calculated z-pos
-    [ ] Maintenance and start
-      [ ] Go to x-start, count to x-end, go to x-start
-      [ ] Go to y-start, count to y-end, go to y-start
-      [ ] Go to z-start, count to z-end, go to z-start
+          Acceptance criteria: it counts in units from an internal counter that is reset during calibration
+    [ ] Calibration and start
+      [ ] Go to x-start, count to x-end, go to x-start, store x-end, reset x-pos
+      [ ] Go to y-start, count to y-end, go to y-start, store y-end, reset y-pos
+      [ ] Go to z-start, count to z-end, go to z-start, store z-end, reset z-pos
       [ ] Print measured size
     [ ] Operation
       [ ] Print position and status
       [ ] Interpolated go to position
+        [ ] Initially simple interpolation: step by step, no PWM
       [ ] Print success at going to position
       [ ] Emergency stop
       [ ] g-code to serial driver
+        [ ] Add progress/percentage
 [ ] Box electronics
