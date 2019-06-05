@@ -1,0 +1,31 @@
+[ ] Firmware
+  [ ] Evaluate progress of the program
+  [ ] Support basic features
+    [ ] Sensor test:
+      [ ] x-start
+      [ ] x-end
+      [ ] y-start
+      [ ] y-end
+      [ ] z-start
+      [ ] z-end
+      [ ] x-rot1
+      [ ] x-rot2
+      [ ] y-rot1
+      [ ] y-rot2
+      [ ] z-rot1
+      [ ] z-rot2
+      [ ] calculated x-pos
+      [ ] calculated y-pos
+      [ ] calculated z-pos
+    [ ] Maintenance and start
+      [ ] Go to x-start, count to x-end, go to x-start
+      [ ] Go to y-start, count to y-end, go to y-start
+      [ ] Go to z-start, count to z-end, go to z-start
+      [ ] Print measured size
+    [ ] Operation
+      [ ] Print position and status
+      [ ] Interpolated go to position
+      [ ] Print success at going to position
+      [ ] Emergency stop
+      [ ] g-code to serial driver
+[ ] Box electronics

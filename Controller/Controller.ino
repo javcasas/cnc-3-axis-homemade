@@ -12,8 +12,8 @@
 
 #define PIN_Y_MOTOR_1 4
 #define PIN_Y_MOTOR_2 5
-#define PIN_Y_LIMIT_1 9
-#define PIN_Y_LIMIT_2 9
+#define PIN_Y_LIMIT_1 20
+#define PIN_Y_LIMIT_2 21
 #define PIN_Y_ENCODER_1 10
 #define PIN_Y_ENCODER_2 10
 
@@ -66,6 +66,7 @@ void setup() {
   setup_sensors();
   preload_servos();
   Serial.begin(9600);
+  Serial.write("CNC v0.1 ready\n");
 }
 
 void move_axis(int p1, int p2, int dir) {
@@ -181,7 +182,7 @@ void update_z() {
 #define MODE_GO_TO_COORDS 51
 #define MODE_TEST 100
 
-int mode = MODE_GO_TO_HOME_Y;
+int mode = MODE_STOP;
 int blink_pattern = 0b1111111111111111;
 
 void go_to_home_x() {
