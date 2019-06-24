@@ -2,6 +2,7 @@
 #include <criterion/criterion.h>
 #include "../Controller/types.h"
 #include "../Controller/traverse.ino"
+#include "../Controller/comms_parser.ino"
 
 Test(Main, test_traverse_1_along_x) {
     source.x = 5;
@@ -149,4 +150,46 @@ Test(Main, test_traverse_x_multiple_2) {
         
     }
     cr_expect(expected_steps == steps, "Expected steps is the same as taken steps");
+}
+
+Test(Main, test_parser_tst) {
+  int buffer[] = {'t', 's', 't'};
+  struct Action act = parseAction(buffer, 3);
+  struct Action expected = { ACTION_TEST };
+  cr_expect(act.type == expected.type, "tst");
+}
+
+Test(Main, test_parser_sta) {
+  int buffer[] = {'s', 't', 'a'};
+  struct Action act = parseAction(buffer, 3);
+  struct Action expected = { ACTION_STATUS };
+  cr_expect(act.type == expected.type, "sta");
+}
+
+Test(Main, test_parser_pos) {
+  int buffer[] = {'p', 'o', 's'};
+  struct Action act = parseAction(buffer, 3);
+  struct Action expected = { ACTION_POSITION };
+  cr_expect(act.type == expected.type, "pos");
+}
+
+Test(Main, test_parser_cal) {
+  int buffer[] = {'c', 'a', 'l'};
+  struct Action act = parseAction(buffer, 3);
+  struct Action expected = { ACTION_CALIBRATE };
+  cr_expect(act.type == expected.type, "cal");
+}
+
+Test(Main, test_parser_stop) {
+  int buffer[] = {'s', 't', 'o', 'p'};
+  struct Action act = parseAction(buffer, 4);
+  struct Action expected = { ACTION_STOP };
+  cr_expect(act.type == expected.type, "stop");
+}
+
+Test(Main, test_parser_unknown) {
+  int buffer[] = {'a', 's', 'd', 'f'};
+  struct Action act = parseAction(buffer, 4);
+  struct Action expected = { ACTION_UNKNOWN };
+  cr_expect(act.type == expected.type, "unknown");
 }

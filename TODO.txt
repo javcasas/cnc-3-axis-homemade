@@ -27,10 +27,14 @@
       [ ] Print measured size
     [ ] Operation
       [ ] Print position and status
-      [ ] Interpolated go to position
-        [ ] Initially simple interpolation: step by step, no PWM
-      [ ] Print success at going to position
+      [ ] Simple traverse across axis
+        [ ] X axis
+        [ ] Y axis
+        [ ] Z axis
       [ ] Emergency stop
       [ ] g-code to serial driver
         [ ] Add progress/percentage
+      [ ] Print success at going to position
+      [ ] Interpolated go to position
+        [ ] Initially simple interpolation: step by step, no PWM
 [ ] Box electronics
